@@ -36,14 +36,31 @@ and Cleo autonomously:
 Full walkthrough + the source mermaid diagram: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ```
-agents/cleo/   ADK orchestration engine (root operator, triage pipeline, watch loop)
-mcp_server/    cleo-feedback-store — FastMCP stdio server over SQLite
+agents/cleo/   ADK orchestration engine (operator, triage pipeline, watch loop, coder)
+mcp_server/    cleo-feedback-store — FastMCP server (stdio · sse · streamable-http)
+skills/        versioned agent runbooks — consulted before work, extended after it
+workspace/     real demo codebase the coder subagent fixes (test-proven)
 app/           FastAPI service: ADK runner API (/run, /run_sse) + dashboard API + SPA
+cli/           `cleo` command — every subcommand has a --json machine mode
 web/           single-design-system web UI (React + Vite + TS)
 seed/          realistic multi-source demo corpus + seeder
-tests/         offline test suite (no network, no LLM)
-scripts/       live_smoke.py — end-to-end verification with real keys
+tests/         offline test suite, 151 tests (no network, no LLM)
+scripts/       live_smoke.py + demo_fix_loop.py — live verification with real keys
 ```
+
+## Use it in your company today
+
+Cleo is not wired to demo data — sources are configuration:
+
+1. [`docs/GET_STARTED.md`](docs/GET_STARTED.md) — running on **your** GitHub repo and
+   **your** documents (transcripts, support exports, notes) in ~15 minutes via
+   `cleo.config.json`.
+2. [`docs/CLI.md`](docs/CLI.md) — drive everything from the terminal or scripts:
+   `cleo init`, `cleo triage --json`, `cleo status --json`.
+3. [`docs/CONNECT_ANY_AGENT.md`](docs/CONNECT_ANY_AGENT.md) — the feedback store is a
+   standard MCP server over stdio or HTTP, so Claude Code, Cursor, Gemini CLI, or any
+   MCP-capable client can operate Cleo directly. The repo itself ships `AGENTS.md` and
+   `llms.txt` for agent readability.
 
 ## Screenshots
 
@@ -71,7 +88,14 @@ feedback items through MCP store tools and flagged the urgent ones itself:
 | `before_tool_callback` | `action_guard` | directives gate every external write |
 | `after_agent_callback` | `run_recorder` | run ledger without polluting prompts |
 | `McpToolset` (stdio + Streamable HTTP) | all world access | feedback store, filesystem, GitHub |
-| `Runner` + `get_fast_api_app` | `app/main.py` | one process: agent API + dashboard + SPA |
+| sub-agent transfer | operator → `coder` | a coding agent with its own context + sandboxed tools works handoffs to test-proven completion |
+| FunctionTools | coder's file/test tools | in-process sandbox confined to `workspace/` |
+| `Runner` + `get_fast_api_app` | `app/main.py`, `cli/` | one engine behind the UI, the API, and the CLI |
+
+Two loops make it more than a pipeline: **skills** (the agents consult versioned runbooks
+before multi-step work and write new ones via `save_skill` after succeeding at uncovered
+work — intelligence that compounds) and **handoffs** (feedback → bet → handoff → the coder
+subagent ships the fix and proves it with the target repo's test suite).
 
 ## Quickstart
 

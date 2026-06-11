@@ -42,6 +42,14 @@ cd web && bun run build && cd ..
 # restart uvicorn; http://localhost:8080/ now serves the built UI
 ```
 
+## Gate 4b — CLI + MCP transports (offline)
+
+```bash
+uv run cleo status --json          # store, skills count, key presence
+uv run cleo skills list --json     # 5 authored skills
+uv run pytest tests/test_mcp_transport.py tests/test_cli.py -q
+```
+
 ## Gate 5 — live model ping + full smoke (needs GOOGLE_API_KEY)
 
 ```bash
@@ -58,6 +66,15 @@ GitHub MCP list_issues OK (if token set) → one full triage run with event trac
 4. UI → Actions: ledger shows executed actions with rationale; any unauthorized write shows
    as blocked/skipped.
 5. UI → Brief: weekly brief regenerated.
+
+## Gate 6b — the fix loop, live (needs GOOGLE_API_KEY)
+
+```bash
+git checkout -- workspace/                    # ensure the seeded bug is present
+uv run python scripts/demo_fix_loop.py        # coder works a handoff end-to-end
+# expect: handoff done, workspace tests green, code_fix action in the ledger
+git checkout -- workspace/                    # reset afterwards
+```
 
 ## Gate 7 — judging-criteria self-check
 
