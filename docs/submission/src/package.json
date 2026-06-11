@@ -1,0 +1,9 @@
+{
+  "name": "cleo-deck",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [],
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}
