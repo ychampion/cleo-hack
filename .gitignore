@@ -1,0 +1,22 @@
+# local-only design reference material (not part of the submission)
+design-ref/
+
+# secrets & local state
+.env
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# python
+__pycache__/
+.venv/
+.pytest_cache/
+*.pyc
+
+# web
+node_modules/
+web/dist/
+
+# misc
+.DS_Store
