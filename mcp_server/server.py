@@ -397,6 +397,17 @@ def start_run(trigger: str) -> dict:
     """Open an agent run ledger entry ('manual' or 'loop') and return its id."""
     if trigger not in RUN_TRIGGERS:
         return _err(f"trigger must be one of {list(RUN_TRIGGERS)}, got {trigger!r}")
+    # Stale-run sweep: a crashed/interrupted pipeline never reaches finish_run
+    # (e.g. quota exhaustion mid-stage), which would leave a "running" row in
+    # the UI forever. Runs never overlap, so any prior running row is stale by
+    # definition the moment a new run starts.
+    store = get_store()
+    for doc in store.list("runs"):
+        if doc.get("status") == "running":
+            doc["status"] = "error"
+            doc["finished_at"] = utc_now()
+            doc["summary"] = doc.get("summary") or "interrupted before completion (superseded by a newer run)"
+            store.put("runs", doc["id"], doc)
     run_id = new_id("run")
     doc = {
         "id": run_id,

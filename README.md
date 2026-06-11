@@ -45,6 +45,19 @@ tests/         offline test suite (no network, no LLM)
 scripts/       live_smoke.py — end-to-end verification with real keys
 ```
 
+## Screenshots
+
+Themes below are **live agent output** — `gemini-3.5-flash` clustered ~90 raw multi-source
+feedback items through MCP store tools and flagged the urgent ones itself:
+
+| Themes (agent-synthesized) | Directives (declarative intent) |
+|---|---|
+| ![Themes](docs/assets/screenshots/cleo-themes.png) | ![Directives](docs/assets/screenshots/cleo-directives.png) |
+
+| The weekly brief cockpit | Raw multi-source inbox |
+|---|---|
+| ![Brief](docs/assets/screenshots/cleo-brief.png) | ![Inbox](docs/assets/screenshots/cleo-inbox.png) |
+
 ## How we use ADK (the core concepts, not just the import)
 
 | ADK concept | Where | Why |

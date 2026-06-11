@@ -1,5 +1,13 @@
 # Verification gates
 
+> **Status 2026-06-12:** Gates 1–4 PASS (59/59 tests, tsc clean, seeder idempotent, all
+> routes + SPA deep links 200). Gate 5 verified through ingest + synthesis with a real
+> `gemini-3.5-flash` key: parallel ingest over filesystem MCP ingested 39 doc-chunks,
+> synthesizer created 7 themes (urgent: checkout-500s, Okta SSO) and tagged 129 items —
+> then the FREE-tier key's 20-requests/day cap stopped the actor stage. With a paid-tier
+> key (see docs/GCP_SETUP.md) the full run completes in well under a minute. Gate 6 needs
+> GITHUB_TOKEN + GITHUB_DEMO_REPO.
+
 Run these in order. Gates 1–4 need **no keys** (offline, deterministic); gates 5–7 need the
 real `.env` (GOOGLE_API_KEY; GITHUB_TOKEN optional but recommended).
 

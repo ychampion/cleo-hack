@@ -18,15 +18,15 @@ out the rest."
 *Open Agent, click Run triage.* Narrate the live trace as it streams:
 - "Ingestors run **in parallel** — GitHub issues over the GitHub MCP server, call transcripts
   over the filesystem MCP server. Every tool call you see crosses an MCP boundary."
-- "The synthesizer clusters 90 items into 6 themes — it found the checkout-500 spike and
-  flagged it urgent, and caught a real contradiction: enterprise wants email digests off by
-  default, SMBs want them on."
+- "The synthesizer clusters ~90 items into 7 themes — it found the checkout-500 spike
+  (31 signals) and the broken Okta SSO (21 signals) and flagged both urgent, and it caught a
+  real contradiction: enterprise wants email digests off by default, SMBs want them on."
 - "The prioritizer emits structured product bets — typed JSON, not prose."
 - "Now the actor: it checks the directives, and **acts**."
 
 ## 1:50 — Autonomy with accountability (40s)
-*Switch to the GitHub repo tab:* a new issue "Checkout 500s after v2.3 — 7 reports, 3 churn
-threats" with evidence links. *Back to Actions view:* the ledger shows every action — executed
+*Switch to the GitHub repo tab:* a new issue "Checkout 500s after v2.3 — 31 signals, severe
+churn threats" with evidence links. *Back to Actions view:* the ledger shows every action — executed
 ones with results, plus one **blocked** write the guard stopped (no directive covered it).
 "Every autonomous action carries its rationale and evidence. Nothing happens off the books."
 

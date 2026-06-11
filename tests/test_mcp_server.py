@@ -303,6 +303,18 @@ def test_start_and_finish_run():
     assert run["counts"] == {"ingested": 88, "themes": 6, "bets": 0, "actions": 0}
 
 
+def test_start_run_sweeps_stale_running_rows():
+    # A pipeline that crashes mid-stage (e.g. quota exhaustion) never reaches
+    # finish_run; the next start_run must finalize the orphaned row as error.
+    stale = srv.start_run("manual")["id"]
+    fresh = srv.start_run("loop")["id"]
+    store = srv.get_store()
+    assert store.get("runs", stale)["status"] == "error"
+    assert store.get("runs", stale)["finished_at"] is not None
+    assert "interrupted" in store.get("runs", stale)["summary"]
+    assert store.get("runs", fresh)["status"] == "running"
+
+
 def test_start_run_rejects_unknown_trigger():
     assert srv.start_run("cron")["status"] == "error"
 
