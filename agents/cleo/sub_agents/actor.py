@@ -19,6 +19,7 @@ import os
 
 from google.adk.agents import LlmAgent
 from ..model import cleo_model
+from ..skills_index import render_skills_index
 from google.adk.tools import exit_loop
 
 from ..callbacks import action_guard, record_github_write_result
@@ -56,6 +57,9 @@ impossible. If a directive demanded escalation for an urgency >= 2 issue, call
                 "record_action",
                 "write_brief",
                 "get_latest_brief",
+                "list_skills",
+                "load_skill",
+                "save_skill",
             ]
         ),
         exit_loop,
@@ -101,7 +105,9 @@ filed or blocked this run). Then call `record_action` ONCE with
 
 Step 5 — reply with a 3-5 line run summary: bets saved, escalations
 filed/blocked/skipped (with reasons), brief id. If this run produced no new
-bets AND no actions, call `exit_loop` and reply `no new signal — watch loop done.`""",
+bets AND no actions, call `exit_loop` and reply `no new signal — watch loop done.`"""
+        + "\n\n"
+        + render_skills_index(),
         tools=tools,
         before_tool_callback=action_guard,
         after_tool_callback=record_github_write_result,

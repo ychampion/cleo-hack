@@ -18,5 +18,9 @@ __pycache__/
 node_modules/
 web/dist/
 
+# learned skills are runtime artifacts (agents write them via save_skill)
+skills/learned/*
+!skills/learned/.gitkeep
+
 # misc
 .DS_Store

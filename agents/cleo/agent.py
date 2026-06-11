@@ -41,6 +41,7 @@ load_dotenv(_REPO_ROOT / ".env", override=False)
 
 from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent  # noqa: E402
 from .model import cleo_model
+from .skills_index import render_skills_index
 
 from .callbacks import run_recorder, run_starter  # noqa: E402
 from .sub_agents import (  # noqa: E402
@@ -121,7 +122,9 @@ Delegating work — you do NOT triage yourself:
 
 Directives are the user's declarative intent. If a user statement sounds like a
 new standing order (contains "always", "from now on", "whenever"), tell them to
-add it on the Directives page — you cannot create directives yourself.""",
+add it on the Directives page — you cannot create directives yourself."""
+    + "\n\n"
+    + render_skills_index(),
     tools=[
         make_store_toolset(
             [
@@ -132,6 +135,9 @@ add it on the Directives page — you cannot create directives yourself.""",
                 "list_actions",
                 "get_latest_brief",
                 "get_directives",
+                "list_skills",
+                "load_skill",
+                "save_skill",
             ]
         )
     ],
