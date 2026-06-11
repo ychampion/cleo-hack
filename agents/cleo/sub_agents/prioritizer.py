@@ -15,6 +15,7 @@ from __future__ import annotations
 import os
 
 from google.adk.agents import LlmAgent
+from ..model import cleo_model
 
 from ..schemas import BetProposals
 
@@ -22,7 +23,7 @@ from ..schemas import BetProposals
 def make_prioritizer(suffix: str = "") -> LlmAgent:
     return LlmAgent(
         name=f"prioritizer{suffix}",
-        model=os.environ.get("CLEO_MODEL", "gemini-3.5-flash"),
+        model=cleo_model(),
         description=(
             "Turns the synthesis report into 3-5 structured product bets "
             "(strict JSON via output_schema)."

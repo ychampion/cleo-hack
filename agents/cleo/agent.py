@@ -40,6 +40,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(_REPO_ROOT / ".env", override=False)
 
 from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent  # noqa: E402
+from .model import cleo_model
 
 from .callbacks import run_recorder, run_starter  # noqa: E402
 from .sub_agents import (  # noqa: E402
@@ -92,7 +93,7 @@ watch_loop = LoopAgent(
 
 cleo_operator = LlmAgent(
     name="cleo_operator",
-    model=os.environ.get("CLEO_MODEL", "gemini-3.5-flash"),
+    model=cleo_model(),
     description=(
         "Cleo, the autonomous product-feedback operator: answers questions "
         "about the current product-feedback state and dispatches triage runs."

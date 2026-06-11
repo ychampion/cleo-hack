@@ -20,11 +20,12 @@ import os
 
 from google.adk.agents import LlmAgent, ParallelAgent
 
+from ..model import cleo_model
 from ..toolsets import corpus_dir, make_github_toolset, make_store_toolset
 
 
-def _model() -> str:
-    return os.environ.get("CLEO_MODEL", "gemini-3.5-flash")
+def _model():
+    return cleo_model()
 
 
 def make_github_ingestor(suffix: str = "") -> LlmAgent | None:

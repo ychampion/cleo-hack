@@ -18,6 +18,7 @@ from __future__ import annotations
 import os
 
 from google.adk.agents import LlmAgent
+from ..model import cleo_model
 from google.adk.tools import exit_loop
 
 from ..callbacks import action_guard, record_github_write_result
@@ -64,7 +65,7 @@ impossible. If a directive demanded escalation for an urgency >= 2 issue, call
 
     return LlmAgent(
         name=f"actor{suffix}",
-        model=os.environ.get("CLEO_MODEL", "gemini-3.5-flash"),
+        model=cleo_model(),
         description=(
             "Persists the bets, escalates urgent issues to GitHub under directive, "
             "and keeps the weekly brief current."

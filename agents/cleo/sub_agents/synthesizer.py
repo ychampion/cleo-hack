@@ -13,6 +13,7 @@ from __future__ import annotations
 import os
 
 from google.adk.agents import LlmAgent
+from ..model import cleo_model
 
 from ..toolsets import make_store_toolset
 
@@ -20,7 +21,7 @@ from ..toolsets import make_store_toolset
 def make_synthesizer(suffix: str = "") -> LlmAgent:
     return LlmAgent(
         name=f"synthesizer{suffix}",
-        model=os.environ.get("CLEO_MODEL", "gemini-3.5-flash"),
+        model=cleo_model(),
         description=(
             "Clusters untriaged feedback into themes, tags urgency/sentiment, "
             "flags contradictions, and emits the synthesis report."
