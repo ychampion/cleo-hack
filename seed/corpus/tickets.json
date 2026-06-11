@@ -1,0 +1,227 @@
+[
+  {
+    "id": "TCK-1031",
+    "requester": "Joao Pereira <joao@brightloop.io>",
+    "subject": "Exec dashboard extremely slow",
+    "body": "The executive dashboard takes 18 seconds to load for our workspace (42 seats, 6 months of history). It was around 5 seconds in April. Nothing changed on our side. Is there a known performance issue with larger workspaces?",
+    "priority": "normal",
+    "tags": ["performance", "dashboard"],
+    "created_at": "2026-05-20T10:15:00Z"
+  },
+  {
+    "id": "TCK-1033",
+    "requester": "Dr. Lena Ortiz <lortiz@fathomhealth.com>",
+    "subject": "Cannot find how to invite team members",
+    "body": "We just started our trial and spent 40 minutes looking for a way to invite the rest of the clinical ops team. Eventually found it under Settings > Members. Please put an Invite button somewhere visible — this was a frustrating first impression.",
+    "priority": "low",
+    "tags": ["onboarding", "ux"],
+    "created_at": "2026-05-21T09:05:00Z"
+  },
+  {
+    "id": "TCK-1034",
+    "requester": "Anders Bell <anders.bell@nordwindlabs.se>",
+    "subject": "Okta SAML metadata upload fails: invalid certificate chain",
+    "body": "Setting up Okta SSO per your docs. Uploading the IdP metadata XML returns 'invalid certificate chain'. We have verified the metadata against Okta's docs and it validates fine elsewhere. Our cert was rotated in May — possibly your parser does not handle the intermediate certificate? This blocks our company-wide rollout (180 seats).",
+    "priority": "high",
+    "tags": ["sso", "okta", "enterprise"],
+    "created_at": "2026-05-21T14:40:00Z"
+  },
+  {
+    "id": "TCK-1036",
+    "requester": "Tess Marlowe <tess@quillandco.com>",
+    "subject": "CSV export for engagement report",
+    "body": "Our ops lead needs the weekly engagement numbers in a spreadsheet. Right now I screenshot the report and retype the values. Can you add a CSV (or even just copy-as-table) export? This is the single feature my team asks me about most.",
+    "priority": "normal",
+    "tags": ["feature-request", "export"],
+    "created_at": "2026-05-22T11:20:00Z"
+  },
+  {
+    "id": "TCK-1038",
+    "requester": "Sofia Reyes <sofia@ridgeviewcap.com>",
+    "subject": "Outbound webhooks / API rate limit",
+    "body": "We want to stream team metrics into our Snowflake warehouse. The REST API rate limit (60 req/hr) makes nightly syncs impractical for 12 portfolio teams. Either outbound webhooks or a bulk export endpoint would solve this. Happy to be a design partner.",
+    "priority": "normal",
+    "tags": ["feature-request", "api", "webhooks"],
+    "created_at": "2026-05-23T16:02:00Z"
+  },
+  {
+    "id": "TCK-1041",
+    "requester": "Petra Novak <p.novak@helixmfg.com>",
+    "subject": "SSO setup blocked — same certificate chain error",
+    "body": "Evaluating Lumen for ~200 seats. Our identity team hit 'invalid certificate chain' uploading Okta metadata, identical to what I see others reporting. SSO is a hard requirement from security; we cannot proceed with the pilot until this works.",
+    "priority": "high",
+    "tags": ["sso", "okta", "trial"],
+    "created_at": "2026-05-25T08:55:00Z"
+  },
+  {
+    "id": "TCK-1042",
+    "requester": "Hannah Vogel <hannah@brightloop.io>",
+    "subject": "Exec view now 25s+ — is this plan related?",
+    "body": "Following up on TCK-1031 from my colleague. The exec view is now over 25 seconds. Our CFO uses this every Monday. Is performance throttled on the Team plan? If the Business plan fixes it we'd consider upgrading, but I'd like to know the actual cause.",
+    "priority": "high",
+    "tags": ["performance", "dashboard"],
+    "created_at": "2026-05-26T09:30:00Z"
+  },
+  {
+    "id": "TCK-1044",
+    "requester": "Ruth Okafor <ruth@karta.io>",
+    "subject": "Unwanted digest emails — I never opted in",
+    "body": "I started receiving 'Your week in Lumen' digest emails that I never signed up for. I assumed phishing and reported it to IT before realising it was a real feature that is now ON by default for invited users. Please make this opt-in. Defaulting people into email is hostile.",
+    "priority": "low",
+    "tags": ["email", "notifications"],
+    "created_at": "2026-05-27T13:25:00Z"
+  },
+  {
+    "id": "TCK-1045",
+    "requester": "Owen Hart <owen@pebble.studio>",
+    "subject": "Dashboard empty for 24h after setup — looked broken",
+    "body": "Connected our Slack and GitHub during onboarding and then... nothing. Empty dashboard, no message, no progress indicator. I assumed the integration failed and almost cancelled the trial. A note that data backfills overnight would have completely changed that experience.",
+    "priority": "normal",
+    "tags": ["onboarding", "ux"],
+    "created_at": "2026-05-27T17:48:00Z"
+  },
+  {
+    "id": "TCK-1047",
+    "requester": "Gina Tran <gina.tran@acmerobotics.com>",
+    "subject": "Export engagement report to CSV",
+    "body": "Finance needs raw numbers from the engagement report for headcount planning. Currently we transcribe them manually every month, which has already caused one reporting error. CSV export of any report view would be enough.",
+    "priority": "normal",
+    "tags": ["feature-request", "export"],
+    "created_at": "2026-05-28T10:10:00Z"
+  },
+  {
+    "id": "TCK-1049",
+    "requester": "Anders Bell <anders.bell@nordwindlabs.se>",
+    "subject": "ESCALATION: SSO still broken, CISO deadline June 13",
+    "body": "One week since TCK-1034 with no fix. Our CISO has set June 13 as the go/no-go date for the Lumen rollout. If Okta SSO is not working by then, the project is paused until Q4 and the vendor evaluation re-opens. We like the product — please do not lose this on an XML parser bug.",
+    "priority": "urgent",
+    "tags": ["sso", "okta", "escalation", "churn-risk"],
+    "created_at": "2026-05-29T08:20:00Z"
+  },
+  {
+    "id": "TCK-1050",
+    "requester": "Milo Janssen <milo@karta.io>",
+    "subject": "Webhooks or higher API rate limits",
+    "body": "Our data team wants Lumen events (metric updates, alerts) pushed to our pipeline. Polling at the current rate limit cannot keep 8 dashboards fresh. Webhooks would be ideal; a 10x rate limit bump would be an acceptable stopgap.",
+    "priority": "normal",
+    "tags": ["feature-request", "api", "webhooks"],
+    "created_at": "2026-05-30T15:35:00Z"
+  },
+  {
+    "id": "TCK-1052",
+    "requester": "Sofia Reyes <sofia@ridgeviewcap.com>",
+    "subject": "Comparison view filters take ~10s per change",
+    "body": "Every filter change on the team comparison view appears to re-fetch everything — roughly 10 seconds per click. Exploring data with 4-5 filter changes takes a minute of waiting. Caching or incremental updates would make this view actually usable.",
+    "priority": "normal",
+    "tags": ["performance", "dashboard"],
+    "created_at": "2026-06-01T11:45:00Z"
+  },
+  {
+    "id": "TCK-1055",
+    "requester": "Dan Porter <dan.porter@acmerobotics.com>",
+    "subject": "URGENT: 500 error upgrading Team -> Business",
+    "body": "Since last night's release, upgrading our plan fails with a 500 on the checkout page. Card form submits, spinner, then 'something went wrong'. Tried two cards and two browsers. We are onboarding 30 engineers on Monday and need the seats before then.",
+    "priority": "urgent",
+    "tags": ["billing", "checkout", "bug"],
+    "created_at": "2026-06-03T08:12:00Z"
+  },
+  {
+    "id": "TCK-1056",
+    "requester": "Hannah Vogel <hannah@brightloop.io>",
+    "subject": "Adding seats fails with 500 (screenshot attached)",
+    "body": "Adding 5 seats fails every time since v2.3. Screenshot attached shows POST /billing/checkout returning HTTP 500. No charge on our card. Happens in Chrome and Safari, two different admins.",
+    "priority": "high",
+    "tags": ["billing", "checkout", "bug"],
+    "created_at": "2026-06-03T09:50:00Z"
+  },
+  {
+    "id": "TCK-1057",
+    "requester": "Owen Hart <owen@pebble.studio>",
+    "subject": "500 switching to annual billing",
+    "body": "Tried to switch our workspace to annual billing (you emailed us a 20% offer!) and the checkout dies with a 500 right after the card form submits. Money was not taken. Will retry when you confirm it's fixed.",
+    "priority": "normal",
+    "tags": ["billing", "checkout", "bug"],
+    "created_at": "2026-06-03T14:30:00Z"
+  },
+  {
+    "id": "TCK-1058",
+    "requester": "Dan Porter <dan.porter@acmerobotics.com>",
+    "subject": "RE: URGENT 500 on upgrade — CFO now involved",
+    "body": "Day 2 of TCK-1055. Still cannot buy seats. To be direct: 30 engineers start Monday and if they cannot log in, our CFO has asked me to price out Linear + Geckoboard as a replacement this week. I do not want to switch tools. Please escalate to engineering.",
+    "priority": "urgent",
+    "tags": ["billing", "checkout", "churn-risk", "escalation"],
+    "created_at": "2026-06-04T08:05:00Z"
+  },
+  {
+    "id": "TCK-1060",
+    "requester": "Milo Janssen <milo@karta.io>",
+    "subject": "Charged but plan NOT upgraded?",
+    "body": "Worse variant of the checkout bug: our card WAS charged €490 yesterday but the workspace still shows the old plan and the seats never appeared. So the 500 is happening after payment capture for some of us. Please refund or apply the upgrade — and please treat this as a payments incident, not a UI bug.",
+    "priority": "urgent",
+    "tags": ["billing", "checkout", "bug", "payments"],
+    "created_at": "2026-06-04T10:40:00Z"
+  },
+  {
+    "id": "TCK-1061",
+    "requester": "Marcus Webb <m.webb@fathomhealth.com>",
+    "subject": "Okta SSO certificate chain error — compliance blocker",
+    "body": "Fathom Health IT here. We hit the same 'invalid certificate chain' error configuring Okta SAML. As a healthcare company we cannot roll Lumen out org-wide without SSO — it is a compliance requirement, not a preference. Adding our voice to what looks like a known issue.",
+    "priority": "high",
+    "tags": ["sso", "okta", "enterprise"],
+    "created_at": "2026-06-05T09:15:00Z"
+  },
+  {
+    "id": "TCK-1063",
+    "requester": "Ana Souza <ana@loopstudio.design>",
+    "subject": "Trial ended before our data even appeared",
+    "body": "We connected our tools on day 12 of the 14-day trial, the dashboard stayed empty (now I understand data backfills for ~24h, but nothing told us that), and then the trial expired. Could you extend our trial? Also please make the setup steps clearer — we nearly wrote Lumen off as broken.",
+    "priority": "normal",
+    "tags": ["onboarding", "trial"],
+    "created_at": "2026-06-05T16:25:00Z"
+  },
+  {
+    "id": "TCK-1064",
+    "requester": "Hannah Vogel <hannah@brightloop.io>",
+    "subject": "Checkout STILL failing — renewal at risk",
+    "body": "Five days on, seat adds still 500. We are blocked from the Business-tier report builder that we planned this quarter around. Our renewal is next month and my leadership is reading this outage as a reliability signal. Need a date for the fix, please.",
+    "priority": "urgent",
+    "tags": ["billing", "checkout", "churn-risk"],
+    "created_at": "2026-06-08T09:10:00Z"
+  },
+  {
+    "id": "TCK-1066",
+    "requester": "Dr. Lena Ortiz <lortiz@fathomhealth.com>",
+    "subject": "CSV export for compliance audits",
+    "body": "Our quarterly compliance audits require raw activity metrics in spreadsheet form. Today we copy values by hand from three Lumen reports. A CSV export would save us roughly a day each quarter and remove transcription risk.",
+    "priority": "normal",
+    "tags": ["feature-request", "export"],
+    "created_at": "2026-06-08T14:55:00Z"
+  },
+  {
+    "id": "TCK-1067",
+    "requester": "Gina Tran <gina.tran@acmerobotics.com>",
+    "subject": "Dashboards slower since v2.3 widget gallery?",
+    "body": "Since the v2.3 update our main dashboard load went from ~8s to anywhere between 12 and 30 seconds. Suspect the new widget gallery is loading assets for widgets we don't even use. 60 engineers check this page daily, the seconds add up.",
+    "priority": "high",
+    "tags": ["performance", "dashboard", "regression"],
+    "created_at": "2026-06-09T10:05:00Z"
+  },
+  {
+    "id": "TCK-1069",
+    "requester": "Sofia Reyes <sofia@ridgeviewcap.com>",
+    "subject": "Cannot upgrade to access report builder (checkout 500)",
+    "body": "We decided to upgrade specifically for the report builder ahead of our LP meeting, and the checkout 500 is blocking the purchase. You are literally preventing us from giving you money. Board meeting is June 17 — if we can't build the report in Lumen we'll do it in Tableau and the upgrade conversation dies.",
+    "priority": "high",
+    "tags": ["billing", "checkout", "churn-risk"],
+    "created_at": "2026-06-09T15:40:00Z"
+  },
+  {
+    "id": "TCK-1070",
+    "requester": "Petra Novak <p.novak@helixmfg.com>",
+    "subject": "SSO deadline: no fix by June 30 = no contract",
+    "body": "Final follow-up on TCK-1041. Procurement has set June 30 as the deadline: if Okta SSO is not functional by then, we will not proceed to a paid contract and will sign with the runner-up vendor. I have championed Lumen internally and would prefer not to lose this.",
+    "priority": "urgent",
+    "tags": ["sso", "okta", "churn-risk", "escalation"],
+    "created_at": "2026-06-10T08:45:00Z"
+  }
+]

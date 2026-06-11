@@ -1,0 +1,217 @@
+{
+  "channel": "#lumen-feedback",
+  "exported_at": "2026-06-10T18:00:00Z",
+  "note": "Slack Connect channel shared with customer workspaces; Lumen CS relays quotes from accounts not in the channel.",
+  "messages": [
+    {
+      "type": "message",
+      "user": "U02BRT01",
+      "ts": "1779267600.000100",
+      "text": "morning! our team dashboard is taking like 15-20s to load again this week. anyone else seing this? we have ~40 seats so maybe it's a data volume thing",
+      "user_profile": { "real_name": "Hannah Vogel", "team": "Brightloop" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM01",
+      "ts": "1779285600.000200",
+      "text": "relaying from the Fathom Health onboarding call today: \"we couldn't figure out where to invite teammates — the Invite button only shows up under Settings > Members and nobody finds it\"",
+      "user_profile": { "real_name": "Maya Chen", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02NWL01",
+      "ts": "1779357600.000300",
+      "text": "trying to set up Okta SSO and the SAML metadata upload just errors out with \"invalid certificate chain\". our IT is blocked, we cant roll lumen out to the org until this works",
+      "user_profile": { "real_name": "Erik Sandstrom", "team": "Nordwind Labs" }
+    },
+    {
+      "type": "message",
+      "user": "U02KRT01",
+      "ts": "1779379200.000400",
+      "text": "is there any way to export the retro metrics to CSV? our finance team keeps asking and screenshotting dashbords is getting old :/",
+      "user_profile": { "real_name": "Milo Janssen", "team": "Karta.io" }
+    },
+    {
+      "type": "message",
+      "user": "U02QLC01",
+      "ts": "1779442200.000500",
+      "text": "honest feedback — first-run setup was confusing. i connected slack but then the dashboard was just empty for a day with zero explanation that data backfills overnight. thought it was broken",
+      "user_profile": { "real_name": "Tess Marlowe", "team": "Quill & Co" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM02",
+      "ts": "1779453000.000600",
+      "text": "heads up team — two more tickets about Okta SSO cert errors today. both are enterprise trials. same \"invalid certificate chain\" message on metadata upload",
+      "user_profile": { "real_name": "Jonah Park", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02RVC01",
+      "ts": "1779534000.000700",
+      "text": "any plans for outbound webhooks? we want to push standup + cycle metrics into our own warehouse. polling the API at 60 req/hr really doesnt cut it for us",
+      "user_profile": { "real_name": "Sofia Reyes", "team": "Ridgeview Capital" }
+    },
+    {
+      "type": "message",
+      "user": "U02PBL01",
+      "ts": "1779703200.000800",
+      "text": "btw i actually love the weekly email digest. wish it was on by default for new members — half my team never enabled it and completely missed the sprint health alert last week",
+      "user_profile": { "real_name": "Owen Hart", "team": "Pebble Studio" }
+    },
+    {
+      "type": "message",
+      "user": "U02BRT01",
+      "ts": "1779786000.000900",
+      "text": "dashboard load is now 25s+ on our exec view. CFO literally asked me why we pay for this. pls help",
+      "user_profile": { "real_name": "Hannah Vogel", "team": "Brightloop" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM01",
+      "ts": "1779807600.001000",
+      "text": "Acme asked again for CSV export of the engagement report — third time this month. exact quote: \"every tool we use has export except lumen\"",
+      "user_profile": { "real_name": "Maya Chen", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02NWL01",
+      "ts": "1779876000.001100",
+      "text": "any update on the SAML cert issue? week 1 of our rollout window is gone. if we miss the window procurement pushes us to Q4 and honestly they'll re-open the whole vendor eval",
+      "user_profile": { "real_name": "Erik Sandstrom", "team": "Nordwind Labs" }
+    },
+    {
+      "type": "message",
+      "user": "U02KRT01",
+      "ts": "1779903000.001200",
+      "text": "small gripe: why do email digests default to ON now for invited users?? three of my analysts thought it was spam and one reported it to IT. should be opt-in imo",
+      "user_profile": { "real_name": "Milo Janssen", "team": "Karta.io" }
+    },
+    {
+      "type": "message",
+      "user": "U02QLC01",
+      "ts": "1779966000.001300",
+      "text": "also +1 on the empty-dashboard thing. a simple \"your data will appear in ~24h\" banner wouldve saved me a support ticket and a mild panic",
+      "user_profile": { "real_name": "Tess Marlowe", "team": "Quill & Co" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM03",
+      "ts": "1780047000.001400",
+      "text": "logging a lost-deal point: fintech prospect (120 seats) said no-go without outbound webhooks for their data platform. second eval this quarter where webhooks came up",
+      "user_profile": { "real_name": "Sam Idris", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02PBL01",
+      "ts": "1780063200.001500",
+      "text": "filters on the team comparison view take ~10s to apply each time. feels like it reloads the entire dataset on every click",
+      "user_profile": { "real_name": "Owen Hart", "team": "Pebble Studio" }
+    },
+    {
+      "type": "message",
+      "user": "U02RVC01",
+      "ts": "1780135200.001600",
+      "text": "+1 csv export from us too. pdf would also be nice for board decks but csv first please",
+      "user_profile": { "real_name": "Sofia Reyes", "team": "Ridgeview Capital" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM01",
+      "ts": "1780304400.001700",
+      "text": "reminder: v2.3 ships tomorrow night — billing revamp + the new widget gallery. CS is on standby for the rollout",
+      "user_profile": { "real_name": "Maya Chen", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02ACM01",
+      "ts": "1780473600.001800",
+      "text": "uh, trying to upgrade us from Team to Business since the new release and the checkout page just spins and then shows a 500. tried twice, card never got charged. kinda urgent — we're adding 30 engineers monday",
+      "user_profile": { "real_name": "Dan Porter", "team": "Acme Robotics" }
+    },
+    {
+      "type": "message",
+      "user": "U02BRT01",
+      "ts": "1780479000.001900",
+      "text": "same here — adding 5 seats fails with \"something went wrong (500)\". browser console shows POST /billing/checkout returning 500 every time",
+      "user_profile": { "real_name": "Hannah Vogel", "team": "Brightloop" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM02",
+      "ts": "1780484400.002000",
+      "text": "confirming we're seeing a spike of checkout 500s since the v2.3 deploy last night. 9 tickets so far this morning. flagging as P0 with eng",
+      "user_profile": { "real_name": "Jonah Park", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02ACM01",
+      "ts": "1780567200.002100",
+      "text": "day 2, still cant upgrade. if we can't add seats by friday we'll have to evaluate alternatives — i have 30 engineers starting and no licenses for them. please escalate",
+      "user_profile": { "real_name": "Dan Porter", "team": "Acme Robotics" }
+    },
+    {
+      "type": "message",
+      "user": "U02KRT01",
+      "ts": "1780576200.002200",
+      "text": "fwiw the annual plan switch also 500s, not just seat adds. happens right after the card form submits",
+      "user_profile": { "real_name": "Milo Janssen", "team": "Karta.io" }
+    },
+    {
+      "type": "message",
+      "user": "U02NWL01",
+      "ts": "1780650000.002300",
+      "text": "two weeks now on the okta blocker. our CISO is asking if lumen actually supports enterprise SSO or if its vaporware. need an ETA today pls",
+      "user_profile": { "real_name": "Erik Sandstrom", "team": "Nordwind Labs" }
+    },
+    {
+      "type": "message",
+      "user": "U02QLC01",
+      "ts": "1780675200.002400",
+      "text": "on the bright side, the new widget gallery in v2.3 is lovely. but the setup wizard STILL doesn't explain the 24h backfill — i ended up explaining it to my own team",
+      "user_profile": { "real_name": "Tess Marlowe", "team": "Quill & Co" }
+    },
+    {
+      "type": "message",
+      "user": "U02BRT01",
+      "ts": "1780909200.002500",
+      "text": "weekly exec report is due and checkout is still failing, so we can't unlock the Business-tier report builder. our renewal convo is next month, this isnt helping",
+      "user_profile": { "real_name": "Hannah Vogel", "team": "Brightloop" }
+    },
+    {
+      "type": "message",
+      "user": "U02RVC01",
+      "ts": "1780916400.002600",
+      "text": "bump on webhooks — also the portfolio dashboard took 30s to render today, worst i've seen it",
+      "user_profile": { "real_name": "Sofia Reyes", "team": "Ridgeview Capital" }
+    },
+    {
+      "type": "message",
+      "user": "U02PBL01",
+      "ts": "1780999200.002700",
+      "text": "monthly ritual: manually retyping lumen numbers into google sheets for our investor update. csv export when? 🙏",
+      "user_profile": { "real_name": "Owen Hart", "team": "Pebble Studio" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM01",
+      "ts": "1781013600.002800",
+      "text": "from Fathom Health this morning: \"inviting our second team was confusing — we accidentally created a duplicate workspace and lost a week of setup before anyone noticed\"",
+      "user_profile": { "real_name": "Maya Chen", "team": "Lumen" }
+    },
+    {
+      "type": "message",
+      "user": "U02ACM01",
+      "ts": "1781082000.002900",
+      "text": "ok our CFO just told me to get a refund quote if the upgrade isn't fixed this week. i'd genuinely rather stay. please, someone",
+      "user_profile": { "real_name": "Dan Porter", "team": "Acme Robotics" }
+    },
+    {
+      "type": "message",
+      "user": "U01LUM02",
+      "ts": "1781085600.003000",
+      "text": "tally for the week: checkout 500s = 23 tickets, okta sso = 6, dashboard perf = 5. customers are hurting — see thread for the worst quotes",
+      "user_profile": { "real_name": "Jonah Park", "team": "Lumen" }
+    }
+  ]
+}
