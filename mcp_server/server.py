@@ -23,7 +23,7 @@ FEEDBACK_SOURCES = ("github", "intercom", "slack", "call", "doc")
 SENTIMENTS = ("pos", "neu", "neg")
 THEME_TRENDS = ("new", "rising", "steady")
 BET_STATUSES = ("proposed", "approved", "shipped")
-ACTION_TYPES = ("github_issue", "github_comment", "brief", "escalation")
+ACTION_TYPES = ("github_issue", "github_comment", "brief", "escalation", "code_fix")
 ACTION_STATUSES = ("proposed", "executed", "failed", "skipped")
 COMPLETE_STATUSES = ("executed", "failed", "skipped")
 RUN_TRIGGERS = ("manual", "loop")
@@ -439,5 +439,60 @@ def finish_run(id: str, summary: str, counts: dict | None = None) -> dict:
     return {"status": "success"}
 
 
+@mcp.tool()
+def get_overview() -> dict:
+    """Read-only workspace overview: counts, urgent themes, latest brief week."""
+    store = get_store()
+    feedback = store.list("feedback")
+    themes = store.list("themes")
+    actions = store.list("actions")
+    briefs = store.list("briefs")
+    latest = max(briefs, key=lambda b: b.get("created_at") or "", default=None)
+    return {
+        "status": "success",
+        "counts": {
+            "feedback": len(feedback),
+            "untriaged": sum(1 for f in feedback if f.get("urgency") is None),
+            "themes": len(themes),
+            "bets": len(store.list("bets")),
+            "actions_executed": sum(1 for a in actions if a.get("status") == "executed"),
+        },
+        "urgent": [
+            {"id": t["id"], "title": t.get("title", ""), "urgency": t.get("urgency", 0)}
+            for t in themes
+            if (t.get("urgency") or 0) >= 2
+        ],
+        "latest_brief_week": (latest or {}).get("week"),
+    }
+
+
+# Phase-2 extension modules (CONTRACTS §11/§12) register their tools on the
+# shared `mcp` instance at import time. ImportError is suppressed only so the
+# server stays importable while those modules land in parallel builds; the
+# integration pass replaces this with direct imports.
+import contextlib as _contextlib  # noqa: E402
+import importlib as _importlib  # noqa: E402
+
+for _ext in ("skill_tools", "handoff_tools"):
+    with _contextlib.suppress(ImportError):
+        _importlib.import_module(f"{__package__}.{_ext}")
+
+
+def main() -> None:
+    """CLI entry (CONTRACTS §10): stdio for in-process agents, sse/streamable-http
+    so any MCP-capable client (Claude Code, Cursor, Gemini CLI, …) can connect."""
+    import argparse
+
+    parser = argparse.ArgumentParser(description="cleo-feedback-store MCP server")
+    parser.add_argument("--transport", choices=("stdio", "sse", "streamable-http"), default="stdio")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8765)
+    args = parser.parse_args()
+    if args.transport != "stdio":
+        mcp.settings.host = args.host
+        mcp.settings.port = args.port
+    mcp.run(transport=args.transport)
+
+
 if __name__ == "__main__":
-    mcp.run()  # stdio transport (default)
+    main()

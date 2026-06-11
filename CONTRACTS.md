@@ -152,3 +152,100 @@ CORPUS_DIR=seed/corpus.
   `test_seed.py` (seed idempotency, corpus integrity).
 - Live verification (needs keys, NOT in pytest): `scripts/live_smoke.py` — checks model ping,
   MCP server boots, optional GitHub MCP list, then one full `triage` run.
+
+---
+
+# Phase 2 contracts (closed-loop intelligence)
+
+## 10. Provider-agnostic MCP surface (multi-transport)
+
+`python -m mcp_server.server` grows CLI flags (argparse):
+- `--transport stdio|sse|streamable-http` (default `stdio` — ADK toolset keeps working unchanged)
+- `--host` (default `127.0.0.1`), `--port` (default `8765`), applied via `mcp.settings`
+- streamable-http endpoint path: `/mcp` (FastMCP default `streamable_http_path`)
+
+So ANY MCP-capable client (Claude Code/Desktop, Cursor, Gemini CLI, etc.) connects to the
+same 16+ tools. New convenience read tool: `get_overview() -> {status, counts, urgent,
+latest_brief_week}` (mirrors §5 /api/overview shape minus heavy lists).
+`docs/CONNECT_ANY_AGENT.md` documents copy-paste configs: `claude mcp add` (stdio + http),
+`.mcp.json`, Cursor `mcp.json`, Gemini CLI settings — plus a security note (bind localhost;
+no auth layer in demo scope).
+
+## 11. Skills (procedural knowledge the agents consult and extend)
+
+- Layout: `skills/<kebab-name>/SKILL.md` (authored, committed) and
+  `skills/learned/<kebab-name>/SKILL.md` (agent-written at runtime; gitignored except .gitkeep).
+- SKILL.md format: YAML frontmatter `name`, `description` (one line, trigger-phrased),
+  then markdown body = step-by-step procedure referencing MCP tools by exact name.
+- Authored skills (exactly these five):
+  1. `triage-feedback` — the full pipeline procedure + quality bar for themes/urgency.
+  2. `write-weekly-brief` — brief structure (urgent → themes w/ trend → bets → contradictions).
+  3. `escalate-churn-risk` — when/how to file a GitHub issue: evidence links, title format,
+     directive check, ledger discipline.
+  4. `fix-from-feedback` — bet → create_handoff → transfer to coder → verify tests →
+     attach result → record action (the §12 loop).
+  5. `answer-with-evidence` — how to answer operator questions: ids + counts + quotes, never
+     invent; which read tools per question type.
+- MCP tools (mcp_server, same naming/return conventions as §2):
+  - `list_skills() -> {status, skills: [{name, description, source: "authored"|"learned"}]}`
+  - `load_skill(name: str) -> {status, name, description, body}`
+  - `save_skill(name: str, description: str, body: str) -> {status, name}` — writes ONLY
+    under `skills/learned/` (path-traversal-safe: kebab-case validated, no separators);
+    overwriting an authored skill is an error; overwriting a learned skill is allowed.
+- Env `CLEO_SKILLS_DIR` overrides the skills root (tests use tmp dirs).
+- Auto-use wiring (agents/cleo): the operator and actor instructions embed the skill INDEX
+  (name+description, built at agent-construction time via a small loader in
+  `agents/cleo/skills_index.py` reading the same dir) + the rule: "before any multi-step
+  task, if a skill matches, call load_skill and follow it; after succeeding at a multi-step
+  task no skill covered, call save_skill with a reusable procedure." Index injection is
+  static-at-construction (cheap), load_skill is the dynamic path.
+
+## 12. Handoffs + coder subagent (agent-orchestrating-agents)
+
+- New collection `handoffs`:
+  `{"id":"hf_…","bet_id":null|"bet_…","title":"…","problem":"…","evidence_ids":[],
+    "acceptance":["…"],"status":"open|in_progress|done|failed",
+    "result":{"files_changed":[],"tests":"","notes":""},"created_at":"…","finished_at":null}`
+- MCP tools: `create_handoff(handoff: dict) -> {status,id}` (status defaults open),
+  `get_handoff(id) -> {status, handoff}`, `list_handoffs(status: str = "") -> {status, handoffs}`,
+  `update_handoff(id, status, result: dict|None) -> {status}` (sets finished_at on done/failed).
+- **Coder subagent** (`agents/cleo/sub_agents/coder.py`): LlmAgent `coder`, model via
+  `cleo_model()`, its OWN tools (plain ADK FunctionTools in `agents/cleo/coder_tools.py`,
+  NOT MCP — sandboxing lives in-process):
+  - `read_workspace_file(path)` / `list_workspace() ` / `write_workspace_file(path, content)`
+    — all paths resolved under `workspace/` ONLY (reject `..`, absolute paths; resolve+check
+    prefix). Write returns diff-style summary (lines added/removed).
+  - `run_workspace_tests() -> {status, passed, failed, output_tail}` — runs
+    `python -m pytest workspace/lumen_checkout/tests -q` via subprocess with 120s timeout,
+    cwd=repo root, env stripped of GOOGLE_API_KEY.
+  - plus store toolset filtered to `get_handoff`, `update_handoff`.
+  - Instruction: take handoff id from session state key `handoff_id` (or ask), read code,
+    make the SMALLEST fix satisfying acceptance, run tests until green, update_handoff done
+    with files_changed + tests output, NEVER touch files outside workspace/.
+- Operator wiring: `coder` added to `cleo_operator.sub_agents`; operator transfers to coder
+  when a fix is requested (per `fix-from-feedback` skill), passing handoff id via state
+  (`output_key`/instruction convention documented in code).
+- `action_guard` unchanged (coder tools are FunctionTools, inherently workspace-scoped);
+  every completed handoff also gets a `record_action` entry type `"code_fix"` (§1 actions
+  type list grows: `github_issue|github_comment|brief|escalation|code_fix`).
+
+## 13. Demo target app: `workspace/lumen_checkout/`
+
+Tiny self-contained FastAPI app mirroring the corpus narrative (Lumen's billing service):
+- `app.py`: `POST /billing/checkout {plan, seats, card_token}` — SEEDED BUG: when
+  `plan == "business"` and `seats > 10` it raises (HTTP 500) due to a tier-pricing lookup
+  using a key that doesn't exist (realistic one-line-ish bug, discoverable by reading code).
+  v2.3 changelog comment in the file points at the regression, matching the corpus.
+- `tests/test_checkout.py`: pytest suite that FAILS on the seeded bug (business+12 seats
+  case) and passes once fixed — this is the coder's objective function. Marked so the MAIN
+  repo suite skips it by default (`pytest.ini` testpaths stays `tests/`; workspace tests run
+  only via `run_workspace_tests`).
+- `workspace/README.md`: one paragraph framing ("the repo Cleo's coder operates on in the
+  demo") + how to reset (`git checkout -- workspace/`).
+
+## 14. Phase-2 API/UI deltas
+
+- `GET /api/handoffs?status=` → `{handoffs}` (§12 shape) — app/api.py.
+- `GET /api/skills` → `{skills}` (index only) — for the UI to render.
+- Actions view gains a "Handoffs" section (id, title, status chip, files_changed count);
+  Agent view header shows skill count ("N skills available") via /api/skills. Keep minimal.
