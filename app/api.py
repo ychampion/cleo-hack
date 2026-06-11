@@ -159,6 +159,34 @@ def latest_brief() -> dict:
     return {"brief": briefs[0] if briefs else None}
 
 
+# ------------------------------------------- handoffs / skills (Phase 2 §14)
+
+
+@router.get("/handoffs")
+def list_handoffs(status: str = "") -> dict:
+    handoffs = _rows(_store(), "handoffs")
+    if status:
+        handoffs = [h for h in handoffs if h.get("status") == status]
+    return {"handoffs": handoffs}
+
+
+@router.get("/skills")
+def list_skills() -> dict:
+    """Skill index (name/description/source) for the UI.
+
+    skill_tools is imported inside the route and failures degrade to an empty
+    list: the module is built by a parallel component, and the Agent header
+    showing "0 skills available" beats a 500 while pieces land.
+    """
+    try:
+        from mcp_server.skill_tools import skills_index  # noqa: PLC0415
+
+        skills = skills_index()
+    except (ImportError, AttributeError):
+        skills = []
+    return {"skills": skills if isinstance(skills, list) else []}
+
+
 # -------------------------------------------------------------- directives
 
 

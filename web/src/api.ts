@@ -48,7 +48,12 @@ export interface Bet {
   created_at: string;
 }
 
-export type ActionType = 'github_issue' | 'github_comment' | 'brief' | 'escalation';
+export type ActionType =
+  | 'github_issue'
+  | 'github_comment'
+  | 'brief'
+  | 'escalation'
+  | 'code_fix';
 export type ActionStatus = 'proposed' | 'executed' | 'failed' | 'skipped';
 
 export interface Action {
@@ -87,6 +92,29 @@ export interface Run {
   status: 'running' | 'done' | 'error';
   summary: string;
   counts: { ingested: number; themes: number; bets: number; actions: number };
+}
+
+// §12 collection "handoffs" — bet → coder work orders
+export type HandoffStatus = 'open' | 'in_progress' | 'done' | 'failed';
+
+export interface Handoff {
+  id: string;
+  bet_id: string | null;
+  title: string;
+  problem: string;
+  evidence_ids: string[];
+  acceptance: string[];
+  status: HandoffStatus;
+  result: { files_changed: string[]; tests: string; notes: string };
+  created_at: string;
+  finished_at: string | null;
+}
+
+// §11 skill index entry (GET /api/skills)
+export interface Skill {
+  name: string;
+  description: string;
+  source: 'authored' | 'learned';
 }
 
 // §5 GET /api/overview
@@ -207,6 +235,16 @@ export async function getLatestBrief(): Promise<Brief | null> {
   const obj = data as Record<string, unknown>;
   if ('brief' in obj) return (obj.brief as Brief | null) ?? null;
   return 'markdown' in obj ? (data as Brief) : null;
+}
+
+export async function listHandoffs(status?: string): Promise<Handoff[]> {
+  const data = await http<unknown>(`/api/handoffs${qs({ status })}`);
+  return asList<Handoff>(data, 'handoffs');
+}
+
+export async function listSkills(): Promise<Skill[]> {
+  const data = await http<unknown>('/api/skills');
+  return asList<Skill>(data, 'skills');
 }
 
 export async function listDirectives(): Promise<Directive[]> {

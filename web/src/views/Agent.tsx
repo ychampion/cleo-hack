@@ -9,10 +9,12 @@ import { useFetch } from '../lib/useFetch';
 import { useOverview } from '../lib/overview';
 import {
   listRuns,
+  listSkills,
   startAgentRun,
   streamRunSse,
   type AdkEvent,
   type Run,
+  type Skill,
 } from '../api';
 import {
   Dot,
@@ -110,6 +112,7 @@ export function AgentView() {
   const paneRef = useRef<HTMLDivElement | null>(null);
 
   const runs = useFetch<Run[]>(() => listRuns(), []);
+  const skills = useFetch<Skill[]>(() => listSkills(), []);
   const overview = useOverview();
 
   // keep the live trace pinned to the latest row
@@ -155,6 +158,11 @@ export function AgentView() {
           <div className="lead">
             Watch Cleo work the pipeline live — ingest → synthesize → prioritize → act.
           </div>
+          {skills.data !== null && (
+            <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+              {skills.data.length} skills available
+            </div>
+          )}
         </div>
         <div className="actions">
           <input

@@ -5,17 +5,41 @@ import { useState } from 'react';
 import { Icons } from '../lib/icons';
 import { timeAgo, fmtDate } from '../lib/format';
 import { useFetch } from '../lib/useFetch';
-import { listActions, type Action } from '../api';
+import {
+  listActions,
+  listHandoffs,
+  type Action,
+  type Handoff,
+  type HandoffStatus,
+} from '../api';
 import {
   actionTone,
   EmptyState,
   ErrorState,
   Loading,
+  SectionRule,
   StatusChip,
+  type Tone,
 } from '../components/Primitives';
 import { Drawer } from '../components/Drawer';
 
 const STATUSES = ['', 'proposed', 'executed', 'failed', 'skipped'] as const;
+
+const HANDOFF_TONE: Record<HandoffStatus, Tone> = {
+  open: 'accent',
+  in_progress: 'violet',
+  done: 'ok',
+  failed: 'danger',
+};
+
+function HandoffChip({ status }: { status: string }) {
+  return (
+    <span className="status-chip" data-tone={HANDOFF_TONE[status as HandoffStatus] ?? ''}>
+      <span className="d" />
+      {status.replace(/_/g, ' ')}
+    </span>
+  );
+}
 
 function resultLink(a: Action): string | null {
   const r = a.result ?? {};
@@ -92,6 +116,53 @@ function ActionDrawer({ action, onClose }: { action: Action | null; onClose: () 
   );
 }
 
+function HandoffsSection() {
+  const handoffs = useFetch<Handoff[]>(() => listHandoffs(), []);
+
+  return (
+    <>
+      <SectionRule num="01" title="Handoffs" sub="bet → coder work orders" />
+      {handoffs.loading ? (
+        <Loading label="Loading handoffs" />
+      ) : handoffs.error ? (
+        <ErrorState error={handoffs.error} onRetry={() => void handoffs.reload()} />
+      ) : (handoffs.data ?? []).length === 0 ? (
+        <p className="muted" style={{ fontSize: 13 }}>
+          No handoffs yet — when Cleo dispatches a fix to the coder, the work order
+          lands here.
+        </p>
+      ) : (
+        <table className="tbl">
+          <thead>
+            <tr>
+              <th style={{ width: 150 }}>Handoff</th>
+              <th>Title</th>
+              <th style={{ width: 130 }}>Status</th>
+              <th style={{ width: 130 }}>Files changed</th>
+              <th style={{ width: 110 }}>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(handoffs.data ?? []).map((h) => (
+              <tr key={h.id} style={{ cursor: 'default' }}>
+                <td className="num" style={{ fontSize: 11.5 }}>
+                  {h.id}
+                </td>
+                <td>{h.title}</td>
+                <td>
+                  <HandoffChip status={h.status} />
+                </td>
+                <td className="num">{(h.result?.files_changed ?? []).length}</td>
+                <td className="num muted">{timeAgo(h.created_at)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
+}
+
 export function ActionsView() {
   const [status, setStatus] = useState<string>('');
   const [selected, setSelected] = useState<Action | null>(null);
@@ -124,6 +195,8 @@ export function ActionsView() {
       </div>
       <div style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
         <div className="page-body" style={{ paddingTop: 8 }}>
+          <HandoffsSection />
+          <SectionRule num="02" title="Ledger" sub="every autonomous action" />
           {actions.loading ? (
             <Loading label="Loading the ledger" />
           ) : actions.error ? (

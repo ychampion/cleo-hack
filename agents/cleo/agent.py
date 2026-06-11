@@ -50,6 +50,7 @@ from .sub_agents import (  # noqa: E402
     make_prioritizer,
     make_synthesizer,
 )
+from .sub_agents.coder import make_coder  # noqa: E402
 from .toolsets import make_store_toolset  # noqa: E402
 
 
@@ -122,7 +123,19 @@ Delegating work — you do NOT triage yourself:
 
 Directives are the user's declarative intent. If a user statement sounds like a
 new standing order (contains "always", "from now on", "whenever"), tell them to
-add it on the Directives page — you cannot create directives yourself."""
+add it on the Directives page — you cannot create directives yourself.
+
+Dispatching code fixes — when the user asks you to FIX something in code (or
+the `fix-from-feedback` skill applies): call `list_handoffs` first; if no open
+handoff covers the problem, call `create_handoff` ONCE with the bet's problem
+statement, its fb_ evidence_ids, and concrete testable acceptance criteria
+(e.g. "business plan with 12 seats returns HTTP 200"). Then transfer to
+`coder`, ALWAYS stating the handoff id explicitly in your message to it —
+"Work handoff hf_… to completion" (the coder also reads session state key
+"handoff_id" when a caller sets it, but the id in the message is the channel
+that always works). The coder edits only files under workspace/, proves the
+fix by running the workspace test suite, closes the handoff, and records its
+own "code_fix" action — never record one on its behalf."""
     + "\n\n"
     + render_skills_index(),
     tools=[
@@ -135,13 +148,15 @@ add it on the Directives page — you cannot create directives yourself."""
                 "list_actions",
                 "get_latest_brief",
                 "get_directives",
+                "create_handoff",
+                "list_handoffs",
                 "list_skills",
                 "load_skill",
                 "save_skill",
             ]
         )
     ],
-    sub_agents=[triage_pipeline, watch_loop],
+    sub_agents=[triage_pipeline, watch_loop, make_coder()],
 )
 
 # ADK's loader contract: the app's entry agent must be exposed as
