@@ -33,8 +33,27 @@ _db.parent.mkdir(parents=True, exist_ok=True)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from google.adk.cli.fast_api import get_fast_api_app  # noqa: E402
+from starlette.exceptions import HTTPException as StarletteHTTPException  # noqa: E402
 
 from .api import router as api_router  # noqa: E402
+
+
+class SpaStaticFiles(StaticFiles):
+    """StaticFiles with SPA fallback.
+
+    ``html=True`` alone only maps directory requests to index.html; a deep link
+    like ``/inbox`` (react-router route, no file on disk) still 404s on direct
+    navigation or refresh. Extension-less misses fall back to index.html so the
+    client router can take over; real asset misses (paths with a dot) stay 404.
+    """
+
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except StarletteHTTPException as exc:
+            if exc.status_code == 404 and "." not in path:
+                return await super().get_response("index.html", scope)
+            raise
 
 app = get_fast_api_app(
     # Absolute path so uvicorn/pytest work from any cwd, not just repo root.
@@ -51,8 +70,7 @@ app = get_fast_api_app(
 
 app.include_router(api_router)
 
-# Serve the built SPA at "/" only when it exists (web/ is built separately);
-# html=True gives index.html fallback for client-side routes.
+# Serve the built SPA at "/" only when it exists (web/ is built separately).
 _dist = REPO_ROOT / "web" / "dist"
 if _dist.is_dir():
-    app.mount("/", StaticFiles(directory=str(_dist), html=True), name="spa")
+    app.mount("/", SpaStaticFiles(directory=str(_dist), html=True), name="spa")
