@@ -6,6 +6,8 @@ than imperative scripts, with every autonomous action recorded in an auditable l
 
 ## Diagram
 
+Rendered: [`docs/assets/architecture.png`](assets/architecture.png)
+
 ```mermaid
 flowchart TB
     subgraph UI["Web UI — React + Vite (single Claude-design system)"]
