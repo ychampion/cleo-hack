@@ -107,4 +107,6 @@ evidence ids. Secrets stay in `.env`; the GitHub PAT is fine-grained to one demo
 
 ## License
 
-MIT
+Source-available, proprietary. You may clone, build, and run Cleo unmodified for
+evaluation and review. The code, architecture, skills, and the user interface and its
+design remain the exclusive property of Cleo — see [LICENSE](LICENSE).

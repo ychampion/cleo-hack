@@ -1,0 +1,38 @@
+Cleo Source-Available License v1.0
+
+Copyright (c) 2026 Cleo. All rights reserved.
+
+1. Grant. Subject to the terms below, permission is granted to any person to view,
+   clone, build, and run this software, in unmodified form, solely for the purposes
+   of evaluation, review, testing, and judging.
+
+2. Restrictions. Except as expressly permitted in Section 1, no rights are granted.
+   Without Cleo's prior written permission you may not:
+   (a) copy, reproduce, or redistribute this software or any part of it;
+   (b) modify it or create derivative works from it;
+   (c) use it, or any part of it, in any product or service, commercial or otherwise;
+   (d) copy or imitate the user interface, its design system, visual style, layouts,
+       icons, or copy (the UI and its design are proprietary to Cleo);
+   (e) copy the architecture, agent designs, skills content, prompts, or documentation
+       into another work;
+   (f) sublicense, sell, rent, lease, or otherwise transfer any rights in it.
+
+3. Ownership. The software — including all source code, prompts, skills, user
+   interface, design assets, documentation, and product concepts — is and remains the
+   exclusive property of Cleo. All rights not expressly granted are reserved.
+
+4. Feedback. If you send feedback or suggestions, you grant Cleo a perpetual,
+   irrevocable, royalty-free right to use them without restriction.
+
+5. No Warranty. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+6. Limitation of Liability. IN NO EVENT SHALL CLEO BE LIABLE FOR ANY CLAIM, DAMAGES
+   OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OF OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. Termination. This license terminates automatically if you breach any of its
+   terms. Upon termination you must destroy all copies in your possession.
+
+For licensing inquiries, contact the Cleo team.
