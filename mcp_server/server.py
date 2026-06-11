@@ -466,16 +466,11 @@ def get_overview() -> dict:
     }
 
 
-# Phase-2 extension modules (CONTRACTS §11/§12) register their tools on the
-# shared `mcp` instance at import time. ImportError is suppressed only so the
-# server stays importable while those modules land in parallel builds; the
-# integration pass replaces this with direct imports.
-import contextlib as _contextlib  # noqa: E402
-import importlib as _importlib  # noqa: E402
-
-for _ext in ("skill_tools", "handoff_tools"):
-    with _contextlib.suppress(ImportError):
-        _importlib.import_module(f"{__package__}.{_ext}")
+# Extension tool modules (CONTRACTS §11/§12) register their tools on the shared
+# `mcp` instance at import time. Imported at the bottom so the symbols they need
+# (`mcp`, `get_store`, `_err`) already exist on this module.
+from mcp_server import handoff_tools as _handoff_tools  # noqa: E402,F401
+from mcp_server import skill_tools as _skill_tools  # noqa: E402,F401
 
 
 def main() -> None:

@@ -20,6 +20,11 @@ Three connectors, all real MCP servers:
 Everything is path-robust: the repo root is derived from ``__file__`` (this
 file lives at ``agents/cleo/toolsets.py``), never from the process cwd, so
 ``adk web agents``, uvicorn, and pytest all resolve the same DB/corpus.
+
+Workspace settings (which GitHub repo, which corpus roots) resolve through
+``app.config.get_config()`` — env vars > ``cleo.config.json`` > defaults — so
+a company can point Cleo at its own repo and document folders with one JSON
+file while every env override keeps working exactly as before.
 """
 
 from __future__ import annotations
@@ -38,6 +43,14 @@ from mcp import StdioServerParameters
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+try:
+    from app.config import get_config
+except ImportError:  # pragma: no cover — e.g. `adk web` spawned outside repo root
+    # ``app`` is a plain repo-root package; loaders that import us as
+    # ``agents.cleo.toolsets`` without the repo root on sys.path need a nudge.
+    sys.path.insert(0, str(REPO_ROOT))
+    from app.config import get_config
+
 GITHUB_HOSTED_MCP_URL = "https://api.githubcopilot.com/mcp/"
 GITHUB_READ_TOOLS = ["list_issues", "search_issues"]
 GITHUB_WRITE_TOOLS = ["create_issue", "add_issue_comment"]
@@ -49,10 +62,28 @@ def db_path() -> Path:
     return raw if raw.is_absolute() else REPO_ROOT / raw
 
 
+def corpus_dirs() -> list[Path]:
+    """Absolute paths to every configured corpus root.
+
+    Resolution (app/config.py): env ``CORPUS_DIR`` (single dir) >
+    ``cleo.config.json`` ``corpus_dirs`` (multiple roots) > default
+    ``["seed/corpus"]``. Relative paths anchor at the repo root, never cwd.
+    """
+    roots = []
+    for raw in get_config()["corpus_dirs"]:
+        path = Path(raw)
+        roots.append(path if path.is_absolute() else REPO_ROOT / path)
+    return roots
+
+
 def corpus_dir() -> Path:
-    """Absolute path to the seed corpus (CORPUS_DIR, default seed/corpus)."""
-    raw = Path(os.environ.get("CORPUS_DIR", "seed/corpus"))
-    return raw if raw.is_absolute() else REPO_ROOT / raw
+    """First corpus root — kept for single-root callers; prefer corpus_dirs()."""
+    return corpus_dirs()[0]
+
+
+def github_repo() -> str:
+    """``owner/repo`` Cleo operates on ("" when unconfigured) — see app/config.py."""
+    return get_config()["github_repo"]
 
 
 def make_store_toolset(tool_filter: list[str]) -> McpToolset:
@@ -126,9 +157,12 @@ def make_github_toolset(read_only: bool = False) -> McpToolset | None:
 
 
 def make_filesystem_toolset() -> McpToolset | None:
-    """Read-only filesystem MCP toolset rooted at the seed corpus (§3).
+    """Read-only filesystem MCP toolset rooted at the corpus dirs (§3).
 
-    Used by the docs ingestor for call-transcripts/docs. Returns None when
+    Used by the docs ingestor for call-transcripts/docs. Every configured
+    corpus root is passed as an allowed directory (the official filesystem
+    server takes multiple roots as positional args), so one toolset can read
+    a company's transcripts folder AND its notes folder. Returns None when
     npx is unavailable (e.g. CI without node); the docs ingestor's instruction
     tells it how to behave without these tools.
     """
@@ -142,7 +176,7 @@ def make_filesystem_toolset() -> McpToolset | None:
                 args=[
                     "-y",
                     "@modelcontextprotocol/server-filesystem",
-                    str(corpus_dir()),
+                    *[str(root) for root in corpus_dirs()],
                 ],
             ),
             timeout=60,

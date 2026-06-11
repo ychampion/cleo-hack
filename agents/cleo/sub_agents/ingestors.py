@@ -10,18 +10,22 @@ the stage is idempotent by construction, which is what lets ``watch_loop``
 iterate safely.
 
 Composition is environment-aware at import time: the GitHub branch only joins
-the stage when both ``GITHUB_TOKEN`` and ``GITHUB_DEMO_REPO`` are configured
-(no token -> no toolset; no repo -> nothing deterministic to list).
+the stage when both ``GITHUB_TOKEN`` and a target repo are configured (no
+token -> no toolset; no repo -> nothing deterministic to list).
+
+Workspace wiring: the GitHub repo and the corpus roots resolve through
+``app.config.get_config()`` (env > ``cleo.config.json`` > defaults), so a
+company points Cleo at its own repo and its own document folders without
+touching this module — and multiple ``corpus_dirs`` fan into ONE docs
+ingestor whose filesystem toolset allows every root.
 """
 
 from __future__ import annotations
 
-import os
-
 from google.adk.agents import LlmAgent, ParallelAgent
 
 from ..model import cleo_model
-from ..toolsets import corpus_dir, make_github_toolset, make_store_toolset
+from ..toolsets import corpus_dirs, github_repo, make_github_toolset, make_store_toolset
 
 
 def _model():
@@ -30,8 +34,10 @@ def _model():
 
 def make_github_ingestor(suffix: str = "") -> LlmAgent | None:
     """GitHub issues -> feedback rows. None when GitHub isn't configured."""
+    # Repo via app.config (env GITHUB_DEMO_REPO > cleo.config.json > "");
+    # the token stays env-only inside make_github_toolset.
     toolset = make_github_toolset(read_only=True)
-    repo = os.environ.get("GITHUB_DEMO_REPO", "").strip()
+    repo = github_repo().strip()
     if toolset is None or "/" not in repo:
         return None
     owner, repo_name = repo.split("/", 1)
@@ -61,11 +67,18 @@ If `list_issues` errors, reply `github: failed — <one-line reason>` instead. N
 
 
 def make_docs_ingestor(suffix: str = "") -> LlmAgent:
-    """Call transcripts + docs from the seed corpus -> feedback rows."""
+    """Call transcripts + docs from the configured corpus roots -> feedback rows.
+
+    Supports MULTIPLE corpus roots (``corpus_dirs`` in cleo.config.json): the
+    filesystem MCP server is launched with every root as an allowed directory,
+    and the instruction enumerates each root explicitly so the model never has
+    to guess which paths it may list.
+    """
     from ..toolsets import make_filesystem_toolset  # local: may probe PATH for npx
 
     fs_toolset = make_filesystem_toolset()
-    corpus = corpus_dir().as_posix()
+    roots = [root.as_posix() for root in corpus_dirs()]
+    roots_block = "\n".join(f"- {root}" for root in roots)
     tools = [make_store_toolset(["ingest_feedback"])]
     if fs_toolset is not None:
         tools.insert(0, fs_toolset)
@@ -80,13 +93,18 @@ def make_docs_ingestor(suffix: str = "") -> LlmAgent:
     else:
         instruction = f"""You ingest customer call transcripts and notes documents as product feedback.
 
-Step 1 — call `list_directory` on "{corpus}/call-transcripts" and on "{corpus}/docs".
+Your corpus roots (the only directories you may read):
+{roots_block}
+
+Step 1 — for EACH corpus root above, call `list_directory` on the root itself,
+then on every subdirectory it reports (e.g. call-transcripts/, docs/).
 
 Step 2 — `read_file` every .md file found (skip anything else).
 
 Step 3 — extract feedback items. One item = one distinct customer statement
-(complaint, request, praise, churn signal). For transcripts use source "call";
-for docs use source "doc". Shape each item as:
+(complaint, request, praise, churn signal). For call transcripts (files under a
+call-transcripts/ directory, or clearly a conversation) use source "call"; for
+every other document use source "doc". Shape each item as:
 {{"source": "call", "external_id": "<filename>#<n>", "author": "<speaker or doc title>",
  "text": "<verbatim or tightly paraphrased statement>", "url": null,
  "created_at": "<date mentioned in the file, else today ISO-8601 UTC>",

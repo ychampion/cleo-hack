@@ -1,0 +1,20 @@
+{
+  "_readme": [
+    "Cleo workspace config — copy this file to cleo.config.json at the repo root",
+    "(or point the CLEO_CONFIG_PATH env var at it) and edit the four keys below.",
+    "Precedence: environment variables (.env) > this file > built-in defaults.",
+    "JSON has no comments, so keys starting with '_' are ignored by the loader."
+  ],
+
+  "_workspace_name": "Display name for your team/workspace.",
+  "workspace_name": "My Company",
+
+  "_github_repo": "owner/repo Cleo ingests issues from and escalates urgent churn risks to. Env GITHUB_DEMO_REPO wins. The token itself (GITHUB_TOKEN) is a secret and stays in .env.",
+  "github_repo": "your-org/your-product",
+
+  "_corpus_dirs": "Directories of YOUR documents — call transcripts, meeting notes, support exports as .md drop-ins. Multiple roots allowed; relative paths resolve against the repo root. Env CORPUS_DIR (single dir) wins.",
+  "corpus_dirs": ["seed/corpus"],
+
+  "_model": "Gemini model id. Env CLEO_MODEL wins.",
+  "model": "gemini-3.5-flash"
+}

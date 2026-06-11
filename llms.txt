@@ -1,0 +1,13 @@
+# Cleo
+
+> Autonomous product-feedback operator built on Google ADK + MCP + gemini-3.5-flash: it ingests customer feedback from GitHub issues and document drop-ins, clusters it into themes, proposes evidence-backed product bets, and acts under standing directives — filing GitHub issues and writing the weekly brief, with every autonomous action in an auditable ledger.
+
+## Docs
+
+- [README](README.md): What Cleo does, architecture overview, quickstart, and how each ADK concept is used.
+- [Get Started](docs/GET_STARTED.md): Run Cleo on your own company in 15 minutes — your GitHub repo, your documents, your directives.
+- [Architecture](docs/ARCHITECTURE.md): The agent tree, MCP boundaries, and data-flow diagram.
+- [Connect Any Agent](docs/CONNECT_ANY_AGENT.md): Copy-paste MCP configs so Claude Code, Cursor, Gemini CLI, or Claude Desktop can operate the same feedback workspace.
+- [CLI](docs/CLI.md): Headless command-line interface (`cleo triage` and friends) for terminals and CI.
+- [Contracts](CONTRACTS.md): The binding integration spec — data shapes, MCP tool surface, REST routes, env vars.
+- [Verification](docs/VERIFICATION.md): Gate-by-gate verification, from the offline test suite to the live end-to-end pipeline.
