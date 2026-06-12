@@ -66,8 +66,12 @@ def ok(step: str, message: str) -> None:
 
 
 def step_model_ping() -> None:
-    if not os.environ.get("GOOGLE_API_KEY", "").strip():
-        fail("model", "GOOGLE_API_KEY is not set (load it via .env)")
+    vertex_mode = (
+        os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").strip().upper() == "TRUE"
+        and os.environ.get("GOOGLE_CLOUD_PROJECT", "").strip()
+    )
+    if not os.environ.get("GOOGLE_API_KEY", "").strip() and not vertex_mode:
+        fail("model", "set GOOGLE_API_KEY, or GOOGLE_GENAI_USE_VERTEXAI=TRUE + GOOGLE_CLOUD_PROJECT (ADC), via .env")
     try:
         from google import genai
 

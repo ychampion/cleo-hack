@@ -177,8 +177,12 @@ async def run_coder(handoff_id: str) -> None:
 def main() -> None:
     model = os.environ.get("CLEO_MODEL", "gemini-3.5-flash")
     print(f"cleo demo fix loop — model={model} repo={REPO_ROOT}")
-    if not os.environ.get("GOOGLE_API_KEY", "").strip():
-        fail("env", "GOOGLE_API_KEY is not set (load it via .env)")
+    vertex_mode = (
+        os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").strip().upper() == "TRUE"
+        and os.environ.get("GOOGLE_CLOUD_PROJECT", "").strip()
+    )
+    if not os.environ.get("GOOGLE_API_KEY", "").strip() and not vertex_mode:
+        fail("env", "set GOOGLE_API_KEY, or GOOGLE_GENAI_USE_VERTEXAI=TRUE + GOOGLE_CLOUD_PROJECT (ADC), via .env")
 
     handoff_id = ensure_handoff()
     before = snapshot_workspace()

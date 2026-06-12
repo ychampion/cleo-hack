@@ -15,9 +15,12 @@ fails the handoff honestly instead of burning quota thrashing.
 
 from __future__ import annotations
 
+import subprocess
+
 from google.adk.agents import LlmAgent
 
 from ..coder_tools import (
+    REPO_ROOT,
     list_workspace,
     read_workspace_file,
     run_workspace_tests,
@@ -25,6 +28,50 @@ from ..coder_tools import (
 )
 from ..model import cleo_model
 from ..toolsets import make_store_toolset
+
+
+def close_handoff_guard(callback_context):
+    """after_agent_callback: enforce the handoff bookkeeping invariant in code.
+
+    Flash-tier models sometimes skip the `update_handoff` protocol step even
+    when instructed (observed live: green tests, ledgered code_fix, handoff
+    left "open"). The ledger must reflect ground truth regardless of model
+    diligence, so this guard closes the handoff FROM ground truth: the actual
+    workspace test result and the actual git diff — the same philosophy as
+    `action_guard` (invariants live in the harness, not in hope).
+    """
+    handoff_id = (callback_context.state.get("handoff_id") or "").strip()
+    if not handoff_id:
+        return None
+    from mcp_server.handoff_tools import get_handoff, update_handoff  # in-process, same store
+
+    found = get_handoff(handoff_id)
+    if found.get("status") != "success":
+        return None
+    if found["handoff"]["status"] in ("done", "failed"):
+        return None  # the agent did its bookkeeping; nothing to enforce
+
+    tests = run_workspace_tests()
+    green = tests.get("status") == "success" and tests.get("failed") == 0
+    try:
+        porcelain = subprocess.run(
+            ["git", "status", "--porcelain", "--", "workspace/"],
+            cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=15,
+        ).stdout
+        files_changed = [line[3:].strip() for line in porcelain.splitlines() if line.strip()]
+    except Exception:
+        files_changed = []
+    update_handoff(
+        handoff_id,
+        "done" if green else "failed",
+        {
+            "files_changed": files_changed,
+            "tests": f"{tests.get('passed', '?')}/{tests.get('failed', '?')}",
+            "notes": "closed by runtime bookkeeping guard (agent omitted update_handoff); "
+            "status derived from the actual workspace test run",
+        },
+    )
+    return None
 
 
 def make_coder(suffix: str = "") -> LlmAgent:
@@ -71,7 +118,16 @@ Procedure, in order:
    satisfies the acceptance criteria>", "evidence_ids": <the handoff's
    evidence_ids>, "result": {"files_changed": ..., "tests": ...}}.
 7. Reply with a 3-4 line summary: root cause, the change, final test counts,
-   handoff status.""",
+   handoff status.
+
+COMPLETION CONTRACT — read this before replying. Your work does not count until
+the handoff record itself is closed. Immediately before writing your final
+summary, call `get_handoff` one last time and check its status:
+- status "done" or "failed" → you may reply.
+- anything else (e.g. still "open" or "in_progress") → you skipped step 5; call
+  `update_handoff` NOW with the proper terminal status and result, verify with
+  `get_handoff` again, and only then reply.
+A green test suite with an unclosed handoff is a FAILED run for you.""",
         tools=[
             list_workspace,
             read_workspace_file,
@@ -79,4 +135,5 @@ Procedure, in order:
             run_workspace_tests,
             make_store_toolset(["get_handoff", "update_handoff", "record_action"]),
         ],
+        after_agent_callback=close_handoff_guard,
     )
