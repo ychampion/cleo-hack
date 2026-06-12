@@ -103,10 +103,12 @@ same checkout-500 the feedback corpus complains about.
 
 ## The learning loop (skills)
 
-Skills are versioned runbooks (`skills/*/SKILL.md`) the agents consult before any multi-step
-task — and extend: after succeeding at a task no skill covered, the agent writes a
-generalized procedure to `skills/learned/` via `save_skill`. Intelligence compounds across
-runs instead of resetting each session.
+Skills are versioned runbooks (`skills/*/SKILL.md`). Their index — name plus trigger-phrased
+description — is embedded in the operator's and actor's context on every run, and full
+procedures load on demand via `load_skill`. New runbooks land in `skills/learned/` via
+`save_skill`: Cleo captures a procedure on request, and because the store is a standard MCP
+server, **any connected agent can teach Cleo a skill over the wire** (verified live over the
+stdio transport). Knowledge compounds across runs instead of resetting each session.
 
 ## Product surfaces
 

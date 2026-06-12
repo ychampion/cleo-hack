@@ -478,15 +478,23 @@ def main() -> None:
     so any MCP-capable client (Claude Code, Cursor, Gemini CLI, …) can connect."""
     import argparse
 
+    # Double-import trap: under `python -m mcp_server.server` this file executes
+    # as `__main__`, while the extension modules (skill_tools / handoff_tools)
+    # register their tools on the CANONICAL `mcp_server.server` module instance.
+    # Always serve the canonical instance so the full toolset is exposed; when
+    # this module already IS canonical (normal import, e.g. the cleo CLI), the
+    # self-import is a no-op returning the same object.
+    from mcp_server.server import mcp as server_mcp
+
     parser = argparse.ArgumentParser(description="cleo-feedback-store MCP server")
     parser.add_argument("--transport", choices=("stdio", "sse", "streamable-http"), default="stdio")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args()
     if args.transport != "stdio":
-        mcp.settings.host = args.host
-        mcp.settings.port = args.port
-    mcp.run(transport=args.transport)
+        server_mcp.settings.host = args.host
+        server_mcp.settings.port = args.port
+    server_mcp.run(transport=args.transport)
 
 
 if __name__ == "__main__":

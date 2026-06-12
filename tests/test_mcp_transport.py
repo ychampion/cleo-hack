@@ -44,8 +44,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 # Per-test budget; both transports together must stay well under ~30s total.
 TRANSPORT_TIMEOUT_S = 20.0
 
-# CONTRACTS §2 tool names, plus the §10 convenience read tool. Extra tools
-# (skills/handoffs, §11/§12) may also be registered; we assert a subset.
+# CONTRACTS §2 tool names, plus the §10 convenience read tool, plus the §11/§12
+# extension tools. The extension entries guard a real regression: under
+# `python -m mcp_server.server` the file executes as __main__ while extensions
+# register on the canonical module instance — main() must serve the canonical
+# instance or external clients silently lose skills + handoffs.
 CONTRACT_TOOLS = {
     "ingest_feedback", "list_feedback", "search_feedback", "tag_feedback",
     "save_themes", "list_themes", "save_bets", "list_bets",
@@ -53,6 +56,8 @@ CONTRACT_TOOLS = {
     "write_brief", "get_latest_brief", "get_directives",
     "start_run", "finish_run",
     "get_overview",
+    "list_skills", "load_skill", "save_skill",
+    "create_handoff", "get_handoff", "list_handoffs", "update_handoff",
 }
 
 

@@ -92,10 +92,12 @@ feedback items through MCP store tools and flagged the urgent ones itself:
 | FunctionTools | coder's file/test tools | in-process sandbox confined to `workspace/` |
 | `Runner` + `get_fast_api_app` | `app/main.py`, `cli/` | one engine behind the UI, the API, and the CLI |
 
-Two loops make it more than a pipeline: **skills** (the agents consult versioned runbooks
-before multi-step work and write new ones via `save_skill` after succeeding at uncovered
-work — intelligence that compounds) and **handoffs** (feedback → bet → handoff → the coder
-subagent ships the fix and proves it with the target repo's test suite).
+Two loops make it more than a pipeline: **skills** (versioned runbooks whose index is
+embedded in the agents' context on every run, with full procedures loaded on demand — and
+new runbooks captured via `save_skill`, by Cleo on request or by **any connected MCP
+client**: your own coding agent can teach Cleo a procedure over the wire) and **handoffs**
+(feedback → bet → handoff → the coder subagent ships the fix and proves it with the target
+repo's test suite, with a runtime guard that closes the ledger from ground truth).
 
 ## Quickstart
 
